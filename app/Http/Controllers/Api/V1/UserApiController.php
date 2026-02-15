@@ -63,7 +63,7 @@ class UserApiController extends Controller
 
     $query->orderBy($sortBy, $sortDir);
 
-    $users = $query->with('auditLogs')->paginate($request->per_page ?? 10);
+    $users = $query->with('auditLogs','roles')->paginate($request->per_page ?? 10);
     return response()->json([
       'success' => true,
       'message' => 'Users fetched successfully',

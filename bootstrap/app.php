@@ -1,14 +1,17 @@
 <?php
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Auth\AuthenticationException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
   ->withRouting(
@@ -26,15 +29,17 @@ return Application::configure(basePath: dirname(__DIR__))
   })
   ->withExceptions(function (Exceptions $exceptions): void {
     $exceptions->render(function (AuthenticationException $e, $request) {
-      return response()->json([
-        'success' => false,
-        'message' => 'Unauthorized. Invalid or missing token.',
-        'error_code' => 401,
-      ], 401);
+      if ($request->expectsJson()) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Unauthorized. Invalid or missing token.',
+          'error_code' => 401,
+        ], 401);
+      }
     });
     $exceptions->render(function (NotFoundHttpException $e, $request) {
 
-      if ($request->is('api/*')) {
+      if ($request->expectsJson()) {
         return response()->json([
           'success' => false,
           'message' => 'Resource not found.',
@@ -50,6 +55,32 @@ return Application::configure(basePath: dirname(__DIR__))
           'errors'  => $e->errors(),
           'error_code' => 422
         ], 422);
+      }
+    });
+    $exceptions->render(function (AuthorizationException $e, $request) {
+      if ($request->expectsJson()) {
+        return response()->json([
+          'success' => false,
+          'message' => 'You are not authorized to perform this action.',
+        ], 403);
+      }
+    });
+    $exceptions->render(function (UnauthorizedException $e, $request) {
+      if ($request->expectsJson()) {
+        return response()->json([
+          'success' => false,
+          'message' => 'You are not authorized to perform this action.',
+          'error_code' => 403
+        ], 403);
+      }
+    });
+    $exceptions->render(function (ThrottleRequestsException $e, $request) {
+      if ($request->expectsJson()) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Too many requests. Please try again later.',
+          'error_code' => 429
+        ], 429);
       }
     });
   })->create();
