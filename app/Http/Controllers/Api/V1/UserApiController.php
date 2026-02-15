@@ -8,6 +8,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Mail\ResetPasswordMail;
 use App\Mail\WelcomeMail;
+use App\Services\AuditLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -187,7 +188,10 @@ $users = $query->paginate($request->per_page ?? 10);
               'email' => $user->email,
               'token'=> $token,
             ]));
-
+      AuditLogService::log([
+          'action' => 'reset_password_requested',
+          'target_user_id' => $user->id,
+      ]);
       return response()->json([
         'success' => true,
         'message' => 'Please check your email for the Rest Password.',

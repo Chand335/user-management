@@ -52,4 +52,9 @@ class User extends Authenticatable
         ];
     }
     protected $guard_name = ['web', 'api'];
+
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class, 'actor_user_id');
+    }
 }
