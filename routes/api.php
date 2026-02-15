@@ -1,32 +1,42 @@
 <?php
-
 use App\Http\Controllers\Api\V1\AuthApiController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\UserApiController;
+use Illuminate\Support\Facades\Route;
 
-Route::controller(AuthApiController::class)
-  ->prefix('v1')
-  ->as('api.')
-  ->group(function () {
+Route::prefix('v1')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Public Routes
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/', function () {
-      return response()->json(['message' => 'Welcome to the User Management API']);
-    })->name('welcome');
-    Route::post('/login', 'login')->name('login')->middleware('throttle:5,1');
-    // reset-password
-    Route::post('users/reset-password', [UserApiController::class, 'resetPassword'])->name('users.reset-password');
-  });
-Route::get('/user', function (Request $request) {
-  return $request->user();
-})->middleware('auth:sanctum');
+        return response()->json([
+            'message' => 'Welcome to the User Management API',
+        ]);
+    });
 
-Route::prefix('v1')
-  ->as('api.')
-  ->middleware(['auth:sanctum'])
-  ->group(function () {
-    // logout
-    Route::post('/logout', [AuthApiController::class, 'logout'])->name('logout');
-    Route::apiResource('users', UserApiController::class);
-    // audit logs
-    Route::get('audit-logs', [UserApiController::class, 'auditLogs'])->name('audit-logs');
-  });
+    Route::post('/login', [AuthApiController::class, 'login'])
+        ->middleware('throttle:5,1');
+
+    Route::post('/users/reset-password', [UserApiController::class, 'resetPassword'])
+        ->middleware('throttle:3,1');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Protected Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('auth:sanctum')->group(function () {
+
+        Route::post('/logout', [AuthApiController::class, 'logout']);
+
+        Route::apiResource('users', UserApiController::class)
+            ->middleware('permission:manage_users');
+
+        Route::get('audit-logs', [UserApiController::class, 'auditLogs'])
+            ->middleware('permission:view_audit_logs');
+    });
+});

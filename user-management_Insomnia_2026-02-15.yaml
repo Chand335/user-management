@@ -12,7 +12,7 @@ collection:
     meta:
       id: req_548ce807a1344488a9ffc353326935bd
       created: 1771093310348
-      modified: 1771149354959
+      modified: 1771158843950
       isPrivate: false
       description: ""
       sortKey: -1771093310348
@@ -45,7 +45,7 @@ collection:
         value: application/json
     authentication:
       type: bearer
-      disabled: true
+      disabled: false
       token: "{{ _.auth_token }}"
     settings:
       renderRequestBody: true
@@ -99,7 +99,7 @@ collection:
     meta:
       id: req_c59fcc6d03fa45f0ae45369b1d9edb23
       created: 1771097159237
-      modified: 1771146435642
+      modified: 1771163178470
       isPrivate: false
       description: ""
       sortKey: -1756500820224.5
@@ -122,7 +122,8 @@ collection:
         value: application/json
     authentication:
       type: bearer
-      token: 2|zr5vRmnoifEQBZEeM7rE12fUtvxRvnX699AlfNdoc7ab8123
+      disabled: false
+      token: "{{ _.auth_token }}"
     settings:
       renderRequestBody: true
       encodeUrl: true
@@ -162,7 +163,7 @@ collection:
     meta:
       id: req_b5908824ad9b435f9465d26f7923de2e
       created: 1771136909367
-      modified: 1771146443540
+      modified: 1771161689807
       isPrivate: false
       description: ""
       sortKey: -1752852697693.625
@@ -171,7 +172,7 @@ collection:
       mimeType: application/json
       text: |-
         {
-        	"email":"chasndsra11@gmail.com"
+        	"email":"homenick.albert@example.org"
         }
     headers:
       - name: Content-Type
@@ -193,7 +194,7 @@ collection:
     meta:
       id: req_26f662fcdcd84104b2d979ae183c64b9
       created: 1771139814280
-      modified: 1771148019687
+      modified: 1771158866178
       isPrivate: false
       description: ""
       sortKey: -1771093310448
@@ -206,7 +207,7 @@ collection:
           description: ""
           disabled: false
         - name: password
-          value: password
+          value: Admin@123
           description: ""
           disabled: false
         - name: email
@@ -268,7 +269,7 @@ collection:
     meta:
       id: req_fab7ae1416c843cc9eced1d22d9702e1
       created: 1771147413390
-      modified: 1771148955330
+      modified: 1771161388523
       isPrivate: false
       description: ""
       sortKey: -1752852697593.625
@@ -289,7 +290,7 @@ collection:
       - name: sort_by
         value: action
         description: ""
-        disabled: true
+        disabled: false
       - name: sort_dir
         value: asc
         description: ""
@@ -301,7 +302,7 @@ collection:
         value: application/json
     authentication:
       type: bearer
-      disabled: true
+      disabled: false
       token: "{{ _.auth_token }}"
     settings:
       renderRequestBody: true
@@ -322,8 +323,8 @@ environments:
   meta:
     id: env_cdc272289dae12a4814bc7e38292c6708da48dcd
     created: 1771093310341
-    modified: 1771148032773
+    modified: 1771161198454
     isPrivate: false
   data:
     base_url: http://localhost:8000/api/v1
-    auth_token: 2|v56IIs4vmf7tbwZzAshtU0Z6IrqWm2mKJ83keUOt465cbab5
+    auth_token: 1|WFc6VJaaegUcmcg5lXvFnVovGz5oKShGQM535DkVf8d73f86

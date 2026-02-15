@@ -31,7 +31,6 @@ class UpdateUserRequest extends FormRequest
                 'email',
                 Rule::unique('users', 'email')->ignore($user?->id),
             ],
-            'name' => 'sometimes|string|max:255',
             'roles.*' => 'exists:roles,name'
         ];
     }
