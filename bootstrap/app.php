@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Validation\ValidationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -35,4 +36,15 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
         });
+        $exceptions->render(function (ValidationException $e, $request) {
+    if ($request->expectsJson()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation failed',
+            'errors'  => $e->errors(),
+            'error_code' => 422
+        ], 422);
+    }
+});
+
     })->create();

@@ -9,6 +9,9 @@ Route::controller(AuthApiController::class)
   ->prefix('v1')
   ->as('api.')
   ->group(function () {
+    Route::get('/', function () {
+      return response()->json(['message' => 'Welcome to the User Management API']);
+    })->name('welcome');
     Route::post('/login', 'login')->name('login');
     // reset-password
     Route::post('users/reset-password', [UserApiController::class, 'resetPassword'])->name('users.reset-password');

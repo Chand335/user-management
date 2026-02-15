@@ -1,59 +1,411 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# User Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Production-Ready REST API with RBAC, Observability & Audit Logging
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# ⚙️ Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* Laravel 12
+* MySQL
+* Laravel Sanctum (API Authentication)
+* spatie/laravel-permission (RBAC)
+* Laravel Telescope (Monitoring)
+* Database Queue Driver
+* Insomnia (API testing)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+# 🚀 Installation & Setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 1️⃣ Clone Repository
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/Chand335/user-management.git
+cd user-management
+```
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
 
-## Contributing
+## 2️⃣ Install Dependencies
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer install
+```
 
-## Code of Conduct
+```bash
+npm install
+npm run build
+```
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 3️⃣ Environment Setup
 
-## Security Vulnerabilities
+Copy environment file:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+cp .env.example .env
+```
 
-## License
+Generate key:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan key:generate
+```
+
+---
+
+## 4️⃣ Configure Environment Variables
+
+Update `.env`:
+
+```env
+APP_NAME="User Management API"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=user_management
+DB_USERNAME=root
+DB_PASSWORD=
+
+QUEUE_CONNECTION=database
+MAIL_MAILER=smtp
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+---
+
+## 5️⃣ Run Migrations & Seeders
+
+```bash
+php artisan migrate
+php artisan db:seed
+or
+php artisan migrate:fresh --seed
+```
+
+Seeder creates:
+
+* 1 Admin user
+* 1 Manager user
+* Roles & permissions
+
+### Default Users
+
+Admin:
+
+```
+email: admin@example.com
+password: Admin@123
+```
+
+Manager:
+
+```
+email: manager@example.com
+password: Manager@123
+```
+
+---
+
+## 6️⃣ Queue Setup
+
+Create queue tables:
+
+```bash
+php artisan queue:table
+php artisan migrate
+```
+
+Start queue worker:
+
+```bash
+php artisan queue:work
+```
+
+Required for:
+
+* Welcome Email
+* Delayed Reset Password Email
+
+---
+
+# 🔐 Authentication
+
+Uses Laravel Sanctum.
+
+### Login
+
+`POST /api/login`
+
+Returns access token.
+
+Use token in header:
+
+```
+Authorization: Bearer {token}
+```
+
+---
+
+### Logout
+
+`POST /api/logout`
+
+Revokes current token.
+
+---
+
+# 👥 User Management Endpoints
+
+All routes require authentication.
+
+---
+
+## GET /api/users
+
+Supports:
+
+* page
+* per_page
+* search (name/email)
+* sort_by
+* sort_dir
+
+Returns paginated response with meta.
+
+---
+
+## POST /api/users
+
+Creates user.
+
+* Validates request
+* Hashes password
+* Assigns roles
+* Sends Welcome Email (queued)
+* Creates audit log
+
+---
+
+## POST /api/users/(id)
+
+Updates user by ID.
+
+* Supports role updates
+* Logs changed attributes
+* Uses conditional validation
+
+---
+
+## Delete /api/users/(id)
+
+Soft deletes user.
+
+Safeguard:
+
+* Prevents self-deletion
+
+---
+
+## POST /api/users/reset-password
+
+* Generates secure token
+* Queues email
+* Delayed by 45 seconds
+* Logs reset request
+
+---
+
+# 🛡 RBAC Implementation
+
+Using spatie/laravel-permission.
+
+### Roles
+
+* admin
+* manager
+
+### Permission
+
+* manage_users
+
+### Enforcement
+
+* Admin: Full access
+* Manager: Restricted
+* Manager accessing admin-only route returns 403
+
+---
+
+# 📋 Validation Strategy
+
+Uses Form Requests.
+
+Validation includes:
+
+* required
+* exists
+* unique
+* min
+* max
+* confirmed
+* nullable
+* sometimes
+* conditional rules
+
+### Structured Validation Response
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": {
+    "email": ["The email has already been taken."]
+  }
+}
+```
+
+---
+
+# 📦 API Response Format
+
+### Success
+
+```json
+{
+  "success": true,
+  "message": "User created successfully",
+  "data": {}
+}
+```
+
+### Error
+
+```json
+{
+  "success": false,
+  "message": "Forbidden",
+  "error_code": 403
+}
+```
+
+Proper HTTP status codes are used.
+
+---
+
+# 📑 Audit Logging System
+
+Audit logs stored in `audit_logs` table.
+
+Fields:
+
+* actor_user_id
+* action
+* target_user_id
+* payload_diff (JSON)
+* ip_address
+* user_agent
+* created_at
+
+Tracked actions:
+
+* created_user
+* updated_user
+* deleted_user
+* reset_password_requested
+
+Implemented via:
+
+* UserObserver
+* Central AuditLogService
+
+---
+
+# 📬 Email System
+
+## Welcome Email
+
+* Queued
+* Professional Blade template
+* Includes:
+
+  * Header
+  * User details
+  * CTA button
+  * Footer
+
+---
+
+## Reset Password Email
+
+* Queued
+* Delayed (30 seconds)
+* Secure token included
+
+---
+
+# 🔍 Laravel Telescope
+
+Installed in dev mode.
+
+Start server:
+
+```bash
+php artisan serve
+or
+composer dev
+```
+
+Access:
+
+```
+/telescope
+```
+
+Monitors:
+
+* Requests
+* Database queries
+* Queued jobs
+* Mail
+* Exceptions
+
+### Production Restriction
+
+Telescope access restricted to:
+
+```php
+app()->environment('local')
+```
+
+---
+
+# 🔒 Security Practices
+
+* Passwords hashed (bcrypt)
+* Sensitive fields hidden
+* Sanctum token-based auth
+* Soft deletes
+* Structured error responses
+* Rate limiting
+
+---
+
+---
+
+

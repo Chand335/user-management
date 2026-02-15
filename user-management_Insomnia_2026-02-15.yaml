@@ -1,0 +1,329 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: User Management
+meta:
+  id: wrk_7fca54fc34b548b583dbdcdffb8cd10d
+  created: 1771093310337
+  modified: 1771146890208
+  description: ""
+collection:
+  - url: "{{ _.base_url }}/users"
+    name: Users List
+    meta:
+      id: req_548ce807a1344488a9ffc353326935bd
+      created: 1771093310348
+      modified: 1771149354959
+      isPrivate: false
+      description: ""
+      sortKey: -1771093310348
+    method: GET
+    parameters:
+      - name: per_page
+        value: "11"
+        description: ""
+        disabled: false
+      - name: page
+        value: "5"
+        description: ""
+        disabled: false
+      - name: search
+        value: ""
+        description: ""
+        disabled: false
+      - name: sort_by
+        value: name
+        description: ""
+        disabled: false
+      - name: sort_dir
+        value: asc
+        description: ""
+        disabled: false
+    headers:
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    authentication:
+      type: bearer
+      disabled: true
+      token: "{{ _.auth_token }}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/users"
+    name: User create
+    meta:
+      id: req_8896f0e542a44e749bf1279f01a09757
+      created: 1771093788008
+      modified: 1771151294105
+      isPrivate: false
+      description: ""
+      sortKey: -1761364983599
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email" :"chasndsra11@gmail.com",
+          "password" :"password",
+          "password_confirmation" :"password",
+          "roles" :["user"],
+          "name" :"chandra1"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    authentication:
+      type: bearer
+      disabled: false
+      token: "{{ _.auth_token }}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/users/23"
+    name: User update
+    meta:
+      id: req_c59fcc6d03fa45f0ae45369b1d9edb23
+      created: 1771097159237
+      modified: 1771146435642
+      isPrivate: false
+      description: ""
+      sortKey: -1756500820224.5
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email":"chasndsra11@gmail.com",
+        	"name":"chandra2",
+        	"password":"password",
+        	"roles[1]":"user"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    authentication:
+      type: bearer
+      token: 2|zr5vRmnoifEQBZEeM7rE12fUtvxRvnX699AlfNdoc7ab8123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/users/1001"
+    name: User delete
+    meta:
+      id: req_2cdb9a3e07cf492699c5475c16502e0b
+      created: 1771136259672
+      modified: 1771146685982
+      isPrivate: false
+      description: ""
+      sortKey: -1754068738537.25
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    authentication:
+      type: bearer
+      token: "{{ _.auth_token }}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/users/reset-password"
+    name: reset-password
+    meta:
+      id: req_b5908824ad9b435f9465d26f7923de2e
+      created: 1771136909367
+      modified: 1771146443540
+      isPrivate: false
+      description: ""
+      sortKey: -1752852697693.625
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email":"chasndsra11@gmail.com"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/login"
+    name: Login
+    meta:
+      id: req_26f662fcdcd84104b2d979ae183c64b9
+      created: 1771139814280
+      modified: 1771148019687
+      isPrivate: false
+      description: ""
+      sortKey: -1771093310448
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: email
+          value: admin@example.com
+          description: ""
+          disabled: false
+        - name: password
+          value: password
+          description: ""
+          disabled: false
+        - name: email
+          value: manager@example.com
+          description: ""
+          disabled: true
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/logout"
+    name: Logout
+    meta:
+      id: req_4e12bb4e18cc4f58b90ccc5fcb0738c6
+      created: 1771145513351
+      modified: 1771145623494
+      isPrivate: false
+      description: ""
+      sortKey: -1771093310398
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: ""
+          value: ""
+          description: ""
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    authentication:
+      type: bearer
+      token: "{{ _.auth_token }}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/audit-logs"
+    name: Audit Logs
+    meta:
+      id: req_fab7ae1416c843cc9eced1d22d9702e1
+      created: 1771147413390
+      modified: 1771148955330
+      isPrivate: false
+      description: ""
+      sortKey: -1752852697593.625
+    method: GET
+    parameters:
+      - name: per_page
+        value: "10"
+        description: ""
+        disabled: false
+      - name: page
+        value: "1"
+        description: ""
+        disabled: false
+      - name: search
+        value: ""
+        description: ""
+        disabled: false
+      - name: sort_by
+        value: action
+        description: ""
+        disabled: true
+      - name: sort_dir
+        value: asc
+        description: ""
+        disabled: false
+    headers:
+      - name: User-Agent
+        value: insomnia/12.3.1
+      - name: Accept
+        value: application/json
+    authentication:
+      type: bearer
+      disabled: true
+      token: "{{ _.auth_token }}"
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_cdc272289dae12a4814bc7e38292c6708da48dcd
+    created: 1771093310343
+    modified: 1771093310343
+environments:
+  name: DEV Environment
+  meta:
+    id: env_cdc272289dae12a4814bc7e38292c6708da48dcd
+    created: 1771093310341
+    modified: 1771148032773
+    isPrivate: false
+  data:
+    base_url: http://localhost:8000/api/v1
+    auth_token: 2|v56IIs4vmf7tbwZzAshtU0Z6IrqWm2mKJ83keUOt465cbab5

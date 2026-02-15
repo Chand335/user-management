@@ -29,16 +29,16 @@ class DatabaseSeeder extends Seeder
     $admin->givePermissionTo($view_audit_logs);
 
     $adminUser = User::factory()->create([
-      'name' => 'admin',
+      'name' => 'Admin',
       'email' => 'admin@example.com',
-      'password' => bcrypt('password'),
+      'password' => bcrypt('Admin@123'),
     ]);
     $adminUser->assignRole($admin);
 
     $managerUser = User::factory()->create([
-      'name' => 'manager',
+      'name' => 'Manager',
       'email' => 'manager@example.com',
-      'password' => bcrypt('password'),
+      'password' => bcrypt('Manager@123'),
     ]);
     $managerUser->assignRole($manager);
 
