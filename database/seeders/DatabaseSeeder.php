@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -17,31 +18,39 @@ class DatabaseSeeder extends Seeder
    */
   public function run(): void
   {
-    $admin = Role::create(['name' => 'admin']);
-    $manager = Role::create(['name' => 'manager']);
-    Role::create(['name' => 'user']);
+    $admin = Role::firstOrCreate(['name' => 'admin']);
+    $manager = Role::firstOrCreate(['name' => 'manager']);
+    $userRole = Role::firstOrCreate(['name' => 'user']);
 
-    $manage_users = Permission::create(['name' => 'manage_users']);
-    $view_audit_logs = Permission::create(['name' => 'view_audit_logs']);
+    $manage_users = Permission::firstOrCreate(['name' => 'manage_users']);
+    $view_audit_logs = Permission::firstOrCreate(['name' => 'view_audit_logs']);
 
-    $admin->givePermissionTo($manage_users);
-    $manager->givePermissionTo($manage_users);
-    $admin->givePermissionTo($view_audit_logs);
+    $admin->syncPermissions([$manage_users, $view_audit_logs]);
+    $manager->syncPermissions([$manage_users]);
 
-    $adminUser = User::factory()->create([
-      'name' => 'Admin',
-      'email' => 'admin@example.com',
-      'password' => bcrypt('Admin@123'),
-    ]);
+    $adminUser = User::factory()->firstOrCreate(
+      [
+        'email' => 'admin@example.com',
+      ],
+      [
+        'name' => 'Admin',
+        'password' => Hash::make('Admin@123'),
+      ]
+    );
     $adminUser->assignRole($admin);
 
-    $managerUser = User::factory()->create([
-      'name' => 'Manager',
+    $managerUser = User::factory()->firstOrCreate([
       'email' => 'manager@example.com',
-      'password' => bcrypt('Manager@123'),
+    ], [
+      'name' => 'Manager',
+      'password' => Hash::make('Manager@123'),
     ]);
     $managerUser->assignRole($manager);
 
-    User::factory(1000)->create();
+    $users = User::factory(100)->create();
+    $userRoleId = $userRole->id;
+    $users->each(function ($user) use ($userRoleId) {
+      $user->roles()->sync([$userRoleId]);
+    });
   }
 }

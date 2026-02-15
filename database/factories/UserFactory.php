@@ -33,6 +33,13 @@ class UserFactory extends Factory
         ];
     }
 
+    public function withRole(string $role = 'user'): static
+    {
+        return $this->afterCreating(function ($user) use ($role) {
+            $user->assignRole($role);
+        });
+    }
+
     /**
      * Indicate that the model's email address should be unverified.
      */

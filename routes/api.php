@@ -12,7 +12,7 @@ Route::controller(AuthApiController::class)
     Route::get('/', function () {
       return response()->json(['message' => 'Welcome to the User Management API']);
     })->name('welcome');
-    Route::post('/login', 'login')->name('login');
+    Route::post('/login', 'login')->name('login')->middleware('throttle:5,1');
     // reset-password
     Route::post('users/reset-password', [UserApiController::class, 'resetPassword'])->name('users.reset-password');
   });
