@@ -42,7 +42,7 @@ $query->orderBy(
     $request->sort_dir ?? 'desc'
 );
 
-$users = $query->paginate($request->per_page ?? 10);
+$users = $query->with('auditLogs')->paginate($request->per_page ?? 10);
         return response()->json([
         'success' => true,
         'message' => 'Users fetched successfully',
@@ -180,7 +180,7 @@ $users = $query->paginate($request->per_page ?? 10);
       }
       RateLimiter::increment('resetPassword:'.$user->id);
 
-      $token = Str::random(64);
+      $token = $user->createToken('auth_token')->plainTextToken;
 
        Mail::to($request->email)
             ->later(now()->addSeconds(30),new ResetPasswordMail($data = [
