@@ -20,7 +20,6 @@ class AuditLogService
 
     protected static function actorId(): ?int
     {
-        return 22;
-        // return Auth::id();
+        return Auth::id();
     }
 }
