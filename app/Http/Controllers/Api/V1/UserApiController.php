@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndexAuditLogRequest;
 use App\Http\Requests\IndexUserRequest;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Mail\ResetPasswordMail;
 use App\Mail\WelcomeMail;
+use App\Models\AuditLog;
 use App\Services\AuditLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -201,10 +203,38 @@ class UserApiController extends Controller
     AuditLogService::log([
       'action' => 'reset_password_requested',
       'target_user_id' => $user->id,
+      'actor_user_id' => $user->id
     ]);
     return response()->json([
       'success' => true,
       'message' => 'Please check your email for the Rest Password.',
+    ], 200);
+  }
+
+  // auditLogs
+  public function auditLogs(IndexAuditLogRequest $request)
+  {
+    
+    $query = AuditLog::query();
+
+    if ($request->search) {
+      $query->where(
+        fn($q) =>
+        $q->where('action', 'like', "%{$request->search}%")
+          ->orWhere('ip_address', 'like', "%{$request->search}%")
+      );
+    }
+
+    $query->orderBy(
+      $request->sort_by ?? 'created_at',
+      $request->sort_dir ?? 'desc'
+    );
+
+    $logs = $query->with('actor','target')->paginate($request->per_page ?? 10);
+    return response()->json([
+      'success' => true,
+      'message' => 'Audit logs fetched successfully',
+      'data' => $logs,
     ], 200);
   }
 }

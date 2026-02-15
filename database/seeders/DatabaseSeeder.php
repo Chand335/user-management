@@ -10,27 +10,38 @@ use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
+  use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
-    {
-      $admin = Role::create(['name' => 'admin']);
-      Role::create(['name' => 'manager']);
-      Role::create(['name' => 'user']);
+  /**
+   * Seed the application's database.
+   */
+  public function run(): void
+  {
+    $admin = Role::create(['name' => 'admin']);
+    $manager = Role::create(['name' => 'manager']);
+    Role::create(['name' => 'user']);
 
-      $manage_users = Permission::create(['name' => 'manage_users']);
+    $manage_users = Permission::create(['name' => 'manage_users']);
+    $view_audit_logs = Permission::create(['name' => 'view_audit_logs']);
 
-      $admin->givePermissionTo($manage_users);
-      User::factory(1000)->create();
+    $admin->givePermissionTo($manage_users);
+    $manager->givePermissionTo($manage_users);
+    $admin->givePermissionTo($view_audit_logs);
 
-      $adminUser = User::factory()->create([
-            'name' => 'admin',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password'),
-        ]);
-        $adminUser->assignRole($admin);
-    }
+    $adminUser = User::factory()->create([
+      'name' => 'admin',
+      'email' => 'admin@example.com',
+      'password' => bcrypt('password'),
+    ]);
+    $adminUser->assignRole($admin);
+
+    $managerUser = User::factory()->create([
+      'name' => 'manager',
+      'email' => 'manager@example.com',
+      'password' => bcrypt('password'),
+    ]);
+    $managerUser->assignRole($manager);
+
+    User::factory(1000)->create();
+  }
 }

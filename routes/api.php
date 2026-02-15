@@ -24,4 +24,6 @@ Route::prefix('v1')
     // logout
     Route::post('/logout', [AuthApiController::class, 'logout'])->name('logout');
     Route::apiResource('users', UserApiController::class);
+    // audit logs
+    Route::get('audit-logs', [UserApiController::class, 'auditLogs'])->name('audit-logs');
   });
