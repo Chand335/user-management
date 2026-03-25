@@ -1,0 +1,33 @@
+name: PHPStan Analysis
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+
+      - name: Install dependencies
+        run: composer install --no-progress
+
+      - name: Run PHPStan
+        id: phpstan
+        run: |
+          vendor/bin/phpstan analyse --error-format=json > phpstan-result.json
