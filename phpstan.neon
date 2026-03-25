@@ -1,0 +1,15 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+    level: 5
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::where#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::whereIn#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::whereNull#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::whereNotNull#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::orWhere#'
+        - '#outside of the config directory which returns null when the config is cached, use#'
+        - '#Expression on left side of ?? is not#'
