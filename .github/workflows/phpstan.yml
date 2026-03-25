@@ -6,10 +6,11 @@ on:
 
 permissions:
   issues: write
+  pull-requests: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  
+
 jobs:
   phpstan:
     runs-on: ubuntu-latest
@@ -18,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -30,4 +31,37 @@ jobs:
       - name: Run PHPStan
         id: phpstan
         run: |
-          vendor/bin/phpstan analyse --error-format=json > phpstan-result.json
+          vendor/bin/phpstan analyse --error-format=json > phpstan-result.json || true
+
+      - name: Upload PHPStan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpstan-results
+          path: phpstan-result.json
+
+      - name: Comment PHPStan results on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const raw = fs.readFileSync('phpstan-result.json', 'utf8');
+            const result = JSON.parse(raw);
+
+            const errors = result.files
+              ? Object.entries(result.files).flatMap(([file, data]) =>
+                  data.messages.map(m => `- **${file}:${m.line}** — ${m.message}`)
+                )
+              : [];
+
+            const totalErrors = result.totals?.error ?? errors.length;
+            const body = totalErrors === 0
+              ? '✅ **PHPStan** found no errors.'
+              : `❌ **PHPStan** found ${totalErrors} error(s):\n\n${errors.slice(0, 25).join('\n')}${errors.length > 25 ? `\n\n_...and ${errors.length - 25} more. See the full artifact._` : ''}`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
